@@ -1,0 +1,7 @@
+{
+  "name": "graphyte",
+  "custom": {},
+  "plugins": [
+    "serverless-cors-plugin"
+  ]
+}
