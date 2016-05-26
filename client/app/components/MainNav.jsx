@@ -26,7 +26,7 @@ export default class MainNav extends React.Component {
   render() {
     return (
       <AppBar
-        title="Graphyte.io"
+        title="Graphyte.io2"
         iconClassNameRight="muidocs-icon-navigation-expand-more"
         onRightIconButtonTouchTap={this.props.login}
       />

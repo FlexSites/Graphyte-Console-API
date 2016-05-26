@@ -2,29 +2,20 @@
 
 const express = require('express');
 const config = require('config');
-const cors = require('cors');
+const path = require('path');
 const json = require('body-parser').json;
+// const staticMiddleware = require('./middleware/webpack.dev');
 
+const execute = require('./lib/admin');
 
-const execute = require('./admin');
-
-
-console.log(execute, typeof execute);
 const app = express();
 
-app.use(cors());
 app.use(json());
+// app.use(staticMiddleware);
+// app.use(express.static(path.resolve(__dirname, '../client/dist')));
+
 
 app.use('/:resource/:id?', (req, res, next) => {
-  console.log({
-    token: req.get('Authorization'),
-    platform: req.get('Graphyte-Platform'),
-    id: req.params.id,
-    path: req.originalUrl,
-    payload: req.body,
-    method: req.method,
-  });
-  console.time('execute');
   execute({
     token: req.get('Authorization'),
     platform: req.get('Graphyte-Platform'),
@@ -33,7 +24,6 @@ app.use('/:resource/:id?', (req, res, next) => {
     payload: req.body,
     method: req.method,
   })
-  .tap(() => console.timeEnd('execute'))
   .then(res.send.bind(res))
   .catch(next);
 });
@@ -51,6 +41,7 @@ app.use((err, req, res, next) => {
     });
 })
 
+console.log('listening on ', config.get('port'));
 app.listen(
   config.get('port'),
   () => console.log(`Booted on port ${config.get('port')}`)

@@ -1,5 +1,0 @@
-{
-  "type":"TOKEN",
-  "authorizationToken": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2ZsZXhodWIuYXV0aDAuY29tLyIsInN1YiI6ImdpdGh1YnwzNjc3NDQzIiwiYXVkIjoiWUlGSldMVzBuQjhiT1NkY3ROZU5CWjhmZlNCRDE1M0IiLCJleHAiOjE0NjM3MzM5ODIsImlhdCI6MTQ2MzY5Nzk4Mn0.QPFx0AIc1OLoGH1vZba2rRwaXnwcdbRpiNxygrvpLAE",
-  "methodArn":"arn:aws:execute-api:us-west-2:611601652995:4l1z6zc49h/dev/GET/"
-}

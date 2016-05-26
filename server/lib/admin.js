@@ -1,9 +1,9 @@
 'use strict';
 
 const Bluebird = require('bluebird');
-const Platform = require('./services/Platform');
-const Schema = require('./services/Schema');
-const Auth0 = require('./services/Auth0');
+const Platform = require('../services/Platform');
+const Schema = require('../services/Schema');
+const Auth0 = require('../services/Auth0');
 const errors = require('./errors');
 
 const Unauthorized = errors.UnauthorizedError;

@@ -1,6 +1,4 @@
 node_modules
-coverage
+npm-debug.log
 .DS_Store
-*.log
-dist/**
-!dist/index.html
+dist

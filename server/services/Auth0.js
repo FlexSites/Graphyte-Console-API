@@ -4,7 +4,7 @@ const request = require('request-promise');
 const jwt = require('jsonwebtoken');
 const Bluebird = require('bluebird');
 const Service = require('./Service');
-const Unauthorized = require('../errors').UnauthorizedError;
+const Unauthorized = require('../lib/errors').UnauthorizedError;
 
 const verify = Bluebird.promisify(jwt.verify, jwt);
 

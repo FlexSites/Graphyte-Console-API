@@ -1,9 +1,0 @@
-{
-  "method": "GET",
-  "token": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2ZsZXhodWIuYXV0aDAuY29tLyIsInN1YiI6ImdpdGh1YnwzNjc3NDQzIiwiYXVkIjoiWUlGSldMVzBuQjhiT1NkY3ROZU5CWjhmZlNCRDE1M0IiLCJleHAiOjE0NjM3NDQxMzIsImlhdCI6MTQ2MzcwODEzMn0.NyVQt9cM00K-DNnjBh-_wXt9XOu4oCB8lTrl4lp6Kqs",
-  "path": "/entries",
-  "stage": "test-invoke-stage",
-  "payload": {},
-  "platform": "9cb94b6e-9ea5-4633-b706-2dd8d9cba47a",
-  "id": ""
-}

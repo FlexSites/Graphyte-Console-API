@@ -54,7 +54,7 @@ class App extends Component {
   }
 
   onEditName(value) {
-    console.log('setting internal state', value, this.state.entry);
+    console.log('2setting internal state', value, this.state.entry);
     this.state.entry.name = value;
     this.setState({
       entry: this.state.entry,
@@ -109,7 +109,7 @@ class App extends Component {
           <Grid fluid={true}>
             <Row>
               <Col xs={12} md={6}>
-                <h4>Type Definition</h4>
+                <h4>Type Definitions</h4>
                 <Paper style={paperStyle} zDepth={1} rounded={false}>
                   <AceEditor
                     mode="java"
