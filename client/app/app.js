@@ -26,18 +26,18 @@ const middleware = [
 ]
 
 let themeOverrides = {
-  appBar: {
-    color: grey900
-  },
+  // appBar: {
+  //   color: grey900
+  // },
 
-  palette: {
-    accent1Color: lightGreen700,
-    canvasColor: grey700,
-  },
-  navDrawer: {
-    color: grey800,
-    textColor: white
-  }
+  // palette: {
+  //   accent1Color: lightGreen700,
+  //   canvasColor: grey700,
+  // },
+  // navDrawer: {
+  //   color: grey800,
+  //   textColor: white
+  // }
 }
 
 /* eslint-disable react/display-name */ // This is not a react component

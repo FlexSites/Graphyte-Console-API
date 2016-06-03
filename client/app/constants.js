@@ -26,3 +26,13 @@ export const SCHEMA_ITEM_ADD = 'SCHEMA_ITEM_ADD'
 
 export const PUSH_NOTIFICATION = 'PUSH_NOTIFICATION'
 export const POP_NOTIFICATION = 'POP_NOTIFICATION'
+
+export const ENTRY_TYPES = [
+  'Type',
+  'Scalar',
+  'Input',
+  'Enum',
+  'Interface',
+  'Union',
+  'Schema',
+];

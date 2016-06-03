@@ -3,29 +3,38 @@
 import React, { Component, PropTypes } from 'react'
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import brace from 'brace';
+import { set } from 'object-path';
 import AceEditor from 'react-ace';
 import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import List from './List.jsx';
 import MainNav from '../containers/MainNav'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
+import IconButton from 'material-ui/IconButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Snackbar from 'material-ui/Snackbar';
 import Paper from 'material-ui/Paper';
 import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 import Subheader from 'material-ui/Subheader';
 import EntryActions from './EntryActions.jsx';
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import { ENTRY_TYPES } from '../constants';
 
 import 'brace/theme/tomorrow_night';
+
+const BLANK_ENTRY = { entry: { type: '', resolve: {}, mock: '' } };
 
 class App extends Component {
 
   constructor(props) {
     super(props)
 
-    this.state = { entry: { type: '', resolve: '', mock: '' } }
+    this.state = BLANK_ENTRY;
     this.props.fetchList();
 
     this.lock = new Auth0Lock('YIFJWLW0nB8bOSdctNeNBZ8ffSBD153B', 'flexhub.auth0.com')
@@ -34,14 +43,24 @@ class App extends Component {
     this.onEditName = this.onEditName.bind(this);
     this.saveEntry = this.saveEntry.bind(this);
 
-    this.handleDefChange = this.onChange.bind(this, 'type');
-    this.handleResChange = this.onChange.bind(this, 'resolve');
+    this.handleDefChange = this.onChange.bind(this, 'definition');
+    this.handleResChange = function (key, value){
+      console.log('handling res change', key, value);
+      this.onChange(`resolve.${this.state.entry.name}.${key}`, value);
+    }.bind(this);
     this.handleMockChange = this.onChange.bind(this, 'mock');
+    this.handleTypeChange = this.handleTypeChange.bind(this);
+
+    console.log(typeof this.handleTypeChange, this.handleTypeChange.toString());
+  }
+
+  handleTypeChange(event, index, value) {
+    return this.onChange('type', value);
   }
 
   selectEntry(id) {
     console.log('select', id);
-    this.setState({ entry: this.props.list.find((item) => item.id === id) });
+    this.setState({ entry: this.props.list.find((item) => item.id === id) || BLANK_ENTRY });
   }
 
   showLogin() {
@@ -61,9 +80,15 @@ class App extends Component {
     })
   }
 
+  getChildContext() {
+    return {muiTheme: getMuiTheme()};
+  }
+
   onChange(prop, value) {
-    this.state.entry[prop] = value;
-    // this.setState()
+    set(this.state.entry, prop, value);
+    this.setState({
+      entry: this.state.entry,
+    })
   }
 
   saveEntry() {
@@ -101,6 +126,22 @@ class App extends Component {
       margin: '10px 0',
     };
 
+    let resolves = (this.state.entry.resolve || {})[this.state.entry.name] || {};
+
+    let possibleResolves = (this
+      .state
+      .entry
+      .definition || '')
+      .split('\n')
+      .map(
+        ln => ln
+          .split(/[:(]/)[0]
+          .trim()
+      )
+      .filter(val => !!val);
+
+    console.log('stuff and crap', resolves);
+
     console.log('render', this.props);
     return (
       <div>
@@ -108,13 +149,15 @@ class App extends Component {
         <div style={{ paddingLeft: '256px' }}>
           <Grid fluid={true}>
             <Row>
-              <Col xs={12} md={6}>
+              <Col xs={12} md={12}>
                 <h4>Type Definitions</h4>
+              </Col>
+              <Col xs={12} md={6}>
                 <Paper style={paperStyle} zDepth={1} rounded={false}>
                   <AceEditor
                     mode="java"
                     theme="tomorrow_night"
-                    value={this.state.entry.type}
+                    value={this.state.entry.definition}
                     onChange={this.handleDefChange}
                     name="UNIQUE_ID_OF_DIV"
                     width="100%"
@@ -123,20 +166,42 @@ class App extends Component {
                 </Paper>
               </Col>
               <Col xs={12} md={6}>
-                <h4>Resolver</h4>
-                <Paper style={paperStyle} zDepth={1} rounded={false}>
-                  <AceEditor
-                    mode="java"
-                    theme="tomorrow_night"
-                    value={this.state.entry.resolve}
-                    onChange={this.handleResChange}
-                    width="100%"
-                    name="UNIQUE_ID_OF_DIV2"
-                    editorProps={{$blockScrolling: true}}
-                  />
-                </Paper>
+                <SelectField value={this.state.entry.type} onChange={this.handleTypeChange} fullWidth={true} floatingLabelText="Entry Type">
+                  {ENTRY_TYPES.map((type) => (<MenuItem value={type.toLowerCase()} primaryText={type} />))}
+                </SelectField>
               </Col>
             </Row>
+            {(possibleResolves || []).map((key, idx) => {
+              return (
+                <Paper style={paperStyle} zDepth={1} rounded={false} key={key}>
+                  <Toolbar>
+                    <ToolbarGroup>
+                      <ToolbarTitle text={key} />
+                    </ToolbarGroup>
+                    {
+                      resolves[key] ? (<div></div>) : (<ToolbarGroup lastChild={true}>
+                      <IconButton touch={true} onTouchTap={() => this.handleResChange(key, '// stuff')}>
+                        <NavigationExpandMoreIcon />
+                      </IconButton>
+                    </ToolbarGroup>)
+                    }
+                  </Toolbar>
+                  {resolves[key] ? (<AceEditor
+                    mode="javascript"
+                    theme="tomorrow_night"
+                    value={resolves[key]}
+                    onChange={(val) => {
+                      console.log('What the butt', key, val);
+                      return this.handleResChange(key, val);
+                    }}
+                    width="100%"
+                    height="200px"
+                    name={`UNIQUE_ID_OF_DIV_${idx}`}
+                    editorProps={{$blockScrolling: true}}
+                  />) : (<div></div>)}
+                </Paper>
+              );
+            })}
             <Row>
               <Col md={12}>
                 <EntryActions saveEntry={this.saveEntry} />
@@ -169,6 +234,10 @@ class App extends Component {
     )
   }
 
+}
+
+App.childContextTypes = {
+  muiTheme: PropTypes.object.isRequired,
 }
 
 App.propTypes = {

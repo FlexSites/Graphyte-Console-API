@@ -2,8 +2,17 @@
 
 const express = require('express');
 const config = require('config');
-const path = require('path');
+const authentication = require('./middleware/authentication');
 const json = require('body-parser').json;
+const schemaParse = require('./lib/graph');
+const staticMiddleware = require('./middleware/static-proxy');
+const Schema = require('./services/Schema');
+
+const {
+  graphql,
+  GraphQLSchema,
+} = require('graphql');
+
 // const staticMiddleware = require('./middleware/webpack.dev');
 
 const execute = require('./lib/admin');
@@ -11,11 +20,28 @@ const execute = require('./lib/admin');
 const app = express();
 
 app.use(json());
+app.use((req, res, next) => {
+  console.log('req.url', ~req.url.indexOf('.'), req.url);
+  if (~req.url.indexOf('.') || req.url === '/') return staticMiddleware(req, res);
+  next();
+});
+
 // app.use(staticMiddleware);
 // app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
+app.use('/graph', (req, res, next) => {
+  const schemaDao = new Schema(req.get('Graphyte-Platform'));
+  schemaDao.list()
+    .then(schemaParse)
+    .then((results) => {
+      console.log('BLAH', results instanceof GraphQLSchema);
+      return graphql(results, 'mutation { createPage(input: "seth page") { id content } }')
+    })
+    .then(res.send.bind(res))
+    .catch(next);
+});
 
-app.use('/:resource/:id?', (req, res, next) => {
+app.use('/:resource/:id?', authentication, (req, res, next) => {
   execute({
     token: req.get('Authorization'),
     platform: req.get('Graphyte-Platform'),

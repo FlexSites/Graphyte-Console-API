@@ -34,6 +34,7 @@ module.exports = class DynamoDB extends Service {
   }
   put(Item) {
     if (!Item.id) Item.id = uuid.v4();
+    replaceEmpty(Item);
     return docClient
       .put({
         TableName: this.tableName,
@@ -98,4 +99,19 @@ module.exports = class DynamoDB extends Service {
 function parseItem(response) {
   console.log(response);
   return response.Item || response.Items;
+}
+
+function replaceEmpty(obj) {
+  if (obj === null) return;
+  for (var prop in obj) {
+    let val = obj[prop];
+    if (Array.isArray(obj)) obj[prop] = val.filter(v => !isEmpty(v));
+    else if (typeof val === 'object') replaceEmpty(val);
+    else if (isEmpty(val)) delete obj[prop];
+  }
+  return obj;
+}
+
+function isEmpty(val) {
+  return val === '' || val === null || typeof val === 'undefined';
 }
