@@ -51,6 +51,17 @@ module.exports = class DynamoDB extends Service {
     });
   }
 
+  scan() {
+    return docClient
+      .scan({
+        TableName: this.tableName,
+        ProjectionExpression: this.fields.join(', '),
+        ExpressionAttributeNames: this.expressionAttributes,
+      })
+      .promise()
+      .then(parseItem)
+  }
+
   get(id) {
     console.log('GET ID', {
       TableName: this.tableName,

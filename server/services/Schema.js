@@ -10,16 +10,15 @@ module.exports = class Schema extends DynamoDB {
     this.platformId = platformId;
   }
 
-  list() {
-    let params = this.buildQuery(this.platformId, 'platform');
+  list(platformId) {
+    let params = this.buildQuery(platformId || this.platformId, 'platform');
     return this.query(params);
   }
 
-  findById(id) {
+  findById(id, platformId) {
     let params = this.buildQuery(id);
     params.KeyConditionExpression += ' and platform = :pkey';
-    params.ExpressionAttributeValues[':pkey'] = this.platformId;
-    console.log('querying', params);
+    params.ExpressionAttributeValues[':pkey'] = platformId || this.platformId;
     return this.query(params);
   }
 
