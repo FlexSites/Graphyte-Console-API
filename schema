@@ -1,0 +1,12 @@
+{
+  name: String,
+  type: type|scalar|interface|input|union|enum,
+  fields: [
+    name: String,
+    type: String
+    isRequired: Boolean,
+    isArray: Boolean,
+    description: String
+    resolve: String
+  ]
+}

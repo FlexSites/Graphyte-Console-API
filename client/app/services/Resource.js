@@ -58,7 +58,8 @@ export default class Resource {
 
     if (token) params.headers = {
       Authorization: `Bearer ${token}`,
-      'Graphyte-Platform': '9cb94b6e-9ea5-4633-b706-2dd8d9cba47a',
+      // TODO: Support multi-platform editing
+      'Graphyte-Platform': 'flexsites',
     }
     return axios(params)
         .then(res => {

@@ -6,6 +6,7 @@ const authentication = require('./middleware/authentication');
 const json = require('body-parser').json;
 const staticMiddleware = require('./middleware/static-proxy');
 const { tenants: tenancy } = require('./lib/tenancy');
+const cors = require('cors');
 
 // const staticMiddleware = require('./middleware/webpack.dev');
 
@@ -13,6 +14,9 @@ const execute = require('./lib/admin');
 
 const app = express();
 
+app.use(cors({
+  origin: 'localhost:8080',
+}));
 app.use(json());
 app.use((req, res, next) => {
   console.log('req.url', ~req.url.indexOf('.'), req.url);
@@ -29,10 +33,15 @@ app.use((req, res, next) => {
 // app.use(staticMiddleware);
 // app.use(express.static(path.resolve(__dirname, '../client/dist')));
 
-app.use('/graph', ({ tenant, user }, res, next) => {
-  tenant
-    .connection('graphql')
-    .execute('mutation { createPage(input: "seth page") { id content } }', { tenant, user })
+app.use('/graph', ({ query, tenant, user }, res, next) => {
+  console.log('graphql', query);
+  let conn = tenant
+    .connection('graphql');
+
+  if (query.mock) conn = conn.mock('mutation { createPage(input: "seth page") { id content } }')
+  else conn = conn.execute('mutation { createPage(input: "seth page") { id content } }', { tenant, user });
+
+  conn
     .then(res.send.bind(res))
     .catch(next);
 });

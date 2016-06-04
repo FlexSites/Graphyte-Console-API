@@ -149,8 +149,13 @@ class App extends Component {
         <div style={{ paddingLeft: '256px' }}>
           <Grid fluid={true}>
             <Row>
-              <Col xs={12} md={12}>
+              <Col xs={6} md={6}>
                 <h4>Type Definitions</h4>
+              </Col>
+              <Col xs={6} md={6}>
+                <SelectField value={this.state.entry.type} onChange={this.handleTypeChange} fullWidth={true} floatingLabelText="Entry Type">
+                  {ENTRY_TYPES.map((type) => (<MenuItem value={type.toLowerCase()} primaryText={type} />))}
+                </SelectField>
               </Col>
               <Col xs={12} md={6}>
                 <Paper style={paperStyle} zDepth={1} rounded={false}>
@@ -164,11 +169,6 @@ class App extends Component {
                     editorProps={{$blockScrolling: true}}
                   />
                 </Paper>
-              </Col>
-              <Col xs={12} md={6}>
-                <SelectField value={this.state.entry.type} onChange={this.handleTypeChange} fullWidth={true} floatingLabelText="Entry Type">
-                  {ENTRY_TYPES.map((type) => (<MenuItem value={type.toLowerCase()} primaryText={type} />))}
-                </SelectField>
               </Col>
             </Row>
             {(possibleResolves || []).map((key, idx) => {

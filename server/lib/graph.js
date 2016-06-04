@@ -35,7 +35,6 @@ function parseResolve(resolve) {
       if (typeof val === 'string') prev[curr] = (new Function('source', 'params', 'info', val));
       else if (typeof val === 'object') prev[curr] = parseResolve(val);
       console.log('stuff', prev[curr].toString());
-      if (typeof prev[curr] === 'function') prev[curr]({ id: 'seth' }, { id: 'notseth' }, { info: 'seth' });
       return prev;
     }, {});
 }
