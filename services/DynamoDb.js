@@ -51,6 +51,17 @@ module.exports = class DynamoDB extends Service {
     });
   }
 
+  delete(id) {
+    return docClient
+      .delete({
+        TableName: this.tableName,
+        Key: {
+          id,
+        },
+      })
+      .promise()
+  }
+
   scan() {
     return docClient
       .scan({
